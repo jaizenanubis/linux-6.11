@@ -1,0 +1,37 @@
+name: Build Linux Kernel 6.11
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install build deps
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential flex bison libssl-dev libelf-dev dwarves bc ccache
+
+    - name: Build kernel
+      run: |
+        make olddefconfig
+        make -j$(nproc)
+
+    - name: Package kernel
+      run: |
+        mkdir output
+        cp arch/x86/boot/bzImage output/
+        cp .config output/
+        tar -czf kernel-6.11.tar.gz output
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: kernel-6.11
+        path: kernel-6.11.tar.gz
