@@ -16,12 +16,21 @@ jobs:
     - name: Install build deps
       run: |
         sudo apt update
-        sudo apt install -y build-essential flex bison libssl-dev libelf-dev dwarves bc ccache
+        sudo apt install -y \
+          build-essential \
+          flex \
+          bison \
+          libssl-dev \
+          libelf-dev \
+          libncurses-dev \
+          dwarves \
+          bc \
+          ccache
 
     - name: Build kernel
       run: |
         make olddefconfig
-        make -j$(nproc)
+        make -j"$(nproc)" bzImage modules
 
     - name: Package kernel
       run: |
