@@ -30,7 +30,7 @@ jobs:
     - name: Build kernel
       run: |
         make olddefconfig
-        make -j"$(nproc)" bzImage modules
+        make -j"$(nproc)" NO_DOCS=1 SKIP_TOOLCHAIN=1 bzImage modules
 
     - name: Package kernel
       run: |
